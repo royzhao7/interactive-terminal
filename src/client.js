@@ -1,14 +1,13 @@
-
 const socketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const socketUrl = `${socketProtocol}//${window.location.host}`;
+console.log('socketUrl:'+socketUrl)
 const socket = new WebSocket(socketUrl);
 
 socket.onmessage = (event) => {
     term.write(event.data);
-
 }
 
-var term = new window.Terminal({
+var term = new Terminal({
     cursorBlink: true
 });
 term.open(document.getElementById('terminal'));
@@ -17,9 +16,7 @@ function init() {
     if (term._initialized) {
         return;
     }
-
     term._initialized = true;
-
     term.prompt = () => {
         runCommand('\n');
     };
@@ -28,6 +25,7 @@ function init() {
     }, 300);
 
     term.onKey(keyObj => {
+        console.log(keyObj)
         runCommand(keyObj.key);
     });
 
@@ -43,6 +41,7 @@ function init() {
 }
 
 function runCommand(command) {
+    console.log(command)
     socket.send(command);
 
 }

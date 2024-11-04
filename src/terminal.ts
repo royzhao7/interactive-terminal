@@ -1,7 +1,7 @@
 import os from 'os';
 import pty from 'node-pty';
 
-let sharedPtyProcess = null;
+let sharedPtyProcess:any;
 let sharedTerminalMode = false;
 
 const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
@@ -13,23 +13,25 @@ const spawnShell = () => {
     });
 };
 
-export const setSharedTerminalMode = (useSharedTerminal) => {
+export const setSharedTerminalMode = (useSharedTerminal: boolean) => {
     sharedTerminalMode = useSharedTerminal;
     if (sharedTerminalMode && !sharedPtyProcess) {
         sharedPtyProcess = spawnShell();
     }
 };
 
-export const handleTerminalConnection = (ws) => {
+export const handleTerminalConnection = (ws:any) => {
     let ptyProcess = sharedTerminalMode ? sharedPtyProcess : spawnShell();
 
-    ws.on('message', command => {
+    ws.on('message', (command: any) => {
         const processedCommand = commandProcessor(command);
+        console.log('message: '+processedCommand)
         ptyProcess.write(processedCommand);
     });
 
-    ptyProcess.on('data', (rawOutput) => {
+    ptyProcess.on('data', (rawOutput: any) => {
         const processedOutput = outputProcessor(rawOutput);
+        console.log('data: '+processedOutput)
         ws.send(processedOutput);
     });
 
@@ -41,11 +43,11 @@ export const handleTerminalConnection = (ws) => {
 };
 
 // Utility function to process commands
-const commandProcessor = (command) => {
+const commandProcessor = (command: any) => {
     return command;
 };
 
 // Utility function to process output
-const outputProcessor = (output) => {
+const outputProcessor = (output: any) => {
     return output;
 };
