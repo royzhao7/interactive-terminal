@@ -3,9 +3,9 @@ const socketUrl = `${socketProtocol}//${window.location.host}`;
 console.log('socketUrl:' + socketUrl)
 const socket = new WebSocket(socketUrl);
 
-socket.onmessage = (event) => {
-    term.write(event.data);
-}
+// socket.onmessage = (event) => {
+//     term.write(event.data);
+// }
 
 var term = new Terminal({
     cursorBlink: true
