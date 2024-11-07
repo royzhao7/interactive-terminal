@@ -1,5 +1,41 @@
 import os from 'os';
 import pty from 'node-pty';
+import {Client} from 'ssh2'
+import {readFileSync } from 'fs'
+import {NodeSSH}  from 'node-ssh'
+
+
+const ssh = new NodeSSH()
+ssh.connect({
+  host: '192.168.31.190',
+  username: 'zhaos',
+    password:'123456'
+})
+const conn=ssh.connection
+// const conn = new Client();
+conn?.on('ready', () => {
+    console.log('Client :: ready');
+    conn.shell((err, stream) => {
+      if (err) throw err;
+      stream.on('close', () => {
+        console.log('Stream :: close');
+        conn.end();
+      }).on('data', (data: string) => {
+        console.log('OUTPUT: ' + data);
+      });
+      stream.end('ls -l\nexit\n');
+    });
+  })
+
+
+
+
+
+ // Command
+ ssh.execCommand('ls -la').then(function(result) {
+    console.log('STDOUT: ' + result.stdout)
+    console.log('STDERR: ' + result.stderr)
+  })
 
 let sharedPtyProcess:any;
 let sharedTerminalMode = false;

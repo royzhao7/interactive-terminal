@@ -2,9 +2,12 @@ import http from 'http';
 import { WebSocketServer } from 'ws';
 import fs from 'fs';
 import path from 'path';
-import { handleTerminalConnection, setSharedTerminalMode } from './terminal';
+import { handleTerminalConnection, setSharedTerminalMode } from './terminal.js';
+import { fileURLToPath } from 'url';
 
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+console.log(__dirname)
 
 // Config
 setSharedTerminalMode(false); // Set this to false to allow a shared session
@@ -20,7 +23,7 @@ const server = http.createServer((req, res) => {
             'client.js': { file: "client.js", contentType: "text/javascript" }
         }[routeName];
 
-        // console.log('assetObj:'+assetObj.file)
+        console.log('assetObj:'+assetObj?.file)
         if (!assetObj) {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             return res.end('Path not found');
@@ -29,7 +32,7 @@ const server = http.createServer((req, res) => {
         const filePath = path.join(__dirname, assetObj.file);
 
         fs.readFile(filePath, (err, data) => {
-            console.log('filePath:'+filePath)
+            console.log('readFile:'+filePath)
             if (err) {
                 res.writeHead(500, { 'Content-Type': 'text/plain' });
                 res.end('Failed to load file');
